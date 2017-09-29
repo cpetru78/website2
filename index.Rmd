@@ -13,7 +13,7 @@ In SQL one can filter columns and rows of a selected table. Columns can be filte
 
 Before the tables can be filtered, the Lahman and sqldf packages need to be loaded.
 
-```{r warning=FALSE}
+```{r warning=FALSE,message=FALSE}
 library(Lahman)
 library(sqldf)
 ```
