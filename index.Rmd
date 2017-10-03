@@ -128,7 +128,7 @@ sqldf(query)
 
 Joining allows you to join together two tables to merge the information. 
 
-Question 1: First and last name, along with team, year, and homeruns for Babe Ruth
+Example: First and last name, along with team, year, and homeruns for Babe Ruth
 
 ```{r}
 query<-"select nameFIRST,nameLAST,teamID,yearID,HR 
@@ -139,7 +139,7 @@ where batting.playerID='ruthba01'"
 sqldf(query)
 ```
 
-Question 2: Find all instances of players getting more than 50 homeruns starting with the greatest number. Include first and last names, team, year, and homeruns.
+Example: Find all instances of players getting more than 50 homeruns starting with the greatest number. Include first and last names, team, year, and homeruns.
 
 ```{r}
 query<-"select nameFirst,nameLast,teamID,yearID,HR 
@@ -151,13 +151,53 @@ order by HR DESC"
 sqldf(query)
 ```
 
-Question 3:Find Babe Ruth's homeruns by season, with the team name displayed.
+Example:Find Babe Ruth's homeruns by season, with the team name displayed.
 
 ```{r}
 query<-"select playerID,name,Batting.yearID,Batting.HR 
 from Batting inner join Teams
 on Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
 where playerID='ruthba01'"
+
+sqldf(query)
+```
+
+
+Example: List first name,last name, year, team ID and HR. Limit it to Babe Ruth
+
+```{r}
+query<-"select nameFirst,nameLast,name,Batting.yearID,Batting.HR
+from (Batting inner join Master
+on Batting.playerID=Master.playerID) inner join Teams  
+on Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+where Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+Example: Let’s get the career homerun totals for players. Limit the display to just players who have hit atleast 600 homeruns. The highest homerun totals at the top and first and last names should be listed, as well as the homerun total.
+
+```{r}
+query<-"select nameFirst,nameLast,sum(HR)
+from Batting inner join Master
+on Batting.playerID=Master.playerID
+group by Batting.playerID
+having sum(HR)>=600
+order by sum(HR) DESC"
+
+sqldf(query)
+```
+
+Example: List all players with the first name Bob, who averaged more than one million dollars in salary over their career. Include last names. You will need to use the colnames(Salaries) table.
+
+```{r}
+query<-"select nameFirst,nameLast,avg(salary)
+from Salaries inner join Master
+on Salaries.playerID=Master.playerID
+where nameFirst='Bob'
+group by Salaries.playerID
+having avg(salary)>1000000
+order by avg(salary) DESC"
 
 sqldf(query)
 ```
